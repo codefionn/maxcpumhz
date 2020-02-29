@@ -186,4 +186,6 @@ int main(int argsc, char * argsv[]) {
 	putchar('\n');
 
 	free((void*) buffer);
+
+	return 0;
 }
