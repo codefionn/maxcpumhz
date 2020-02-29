@@ -21,6 +21,7 @@
 #include <unistd.h> // sleep
 
 static const char * CPUMHZ = "cpu MHz";
+static const size_t CPUMHZ_LEN = 7;
 
 static void writetobuffer(size_t *len, size_t *buflen, char * buffer, char c) {
 	// reserve more buffer memory if necessary
@@ -41,27 +42,27 @@ static void readcpuinfo(size_t *filelen, size_t *buflen, char * buffer) {
 	}
 
 	int c;
-	char last[8];
-	last[7] = '\0';
+	char last[CPUMHZ_LEN + 1];
+	last[CPUMHZ_LEN] = '\0';
 	size_t lasti = 0;
 	while ((c = fgetc(file)) != EOF) {
-		if (lasti == 7) {
+		if (lasti == CPUMHZ_LEN) {
 			// shift to left by 1
-			for (size_t i = 1; i < 7; ++i) {
+			for (size_t i = 1; i < CPUMHZ_LEN; ++i) {
 				last[i-1] = last[i];
 			}
 			// last to newly read character
-			last[6] = (char) c;
+			last[CPUMHZ_LEN - 1] = (char) c;
 
 			if (strcmp(last, CPUMHZ))
 				continue;
 		} else {
 			last[lasti++] = c;
-			if (!(lasti == 7 && !strcmp(last, CPUMHZ)))
+			if (!(lasti == CPUMHZ_LEN && !strcmp(last, CPUMHZ)))
 				continue;
 		}
 		// clear
-		memset((void*) last, 0, 7);
+		memset((void*) last, 0, CPUMHZ_LEN);
 		lasti =  0;
 
 		// real till digit
