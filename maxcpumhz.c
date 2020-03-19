@@ -133,7 +133,7 @@ static void printcpuall(const size_t len, const char * strings) {
 		if (i != 0)
 			printf(", ");
 
-		printf("%.2lf", cpuclocks[i].clock);
+		printf("%.0lf", cpuclocks[i].clock);
 	}
 }
 
